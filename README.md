@@ -1,3 +1,11 @@
+
+adv-WFPadTools
+==========
+
+This repository contains a modified variant of the WFPadTools Tor Pluggable Transport.
+Here, we implement the Adv-DWF defense prototype.
+
+
 ![DISCLAIMER](https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Dialog-warning-orange.svg/40px-Dialog-warning-orange.svg.png "experimental")  **experimental - PLEASE BE CAREFUL. Intended for reasearch purposes.**
 
 WFPadTools
