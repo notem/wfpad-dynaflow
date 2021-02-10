@@ -217,20 +217,20 @@ class ExtORPortProtocol(network.GenericProtocol):
             raise NeedMoreData('Not enough data')
 
         data = self.buffer.peek()
-        if '\x00' not in data: # haven't received EndAuthTypes yet
+        if b'\x00' not in data: # haven't received EndAuthTypes yet
             log.debug("%s: Got some auth types data but no EndAuthTypes yet." % self.name)
             raise NeedMoreData('Not EndAuthTypes.')
 
         # Drain all data up to (and including) the EndAuthTypes.
         log.debug("%s: About to drain %d bytes from %d." % \
-                        (self.name, data.index('\x00')+1, len(self.buffer)))
-        data = self.buffer.read(data.index('\x00')+1)
+                        (self.name, data.index(b'\x00')+1, len(self.buffer)))
+        data = self.buffer.read(data.index(b'\x00')+1)
 
-        if '\x01' not in data:
+        if b'\x01' not in data:
             raise UnsupportedAuthTypes("%s: Could not find supported auth type (%s)." % (self.name, repr(data)))
 
         # Send back chosen auth type.
-        self.write("\x01") # Static, since we only support auth type '1' atm.
+        self.write(b"\x01") # Static, since we only support auth type '1' atm.
 
         # Since we are doing the safe-cookie protocol, now send our
         # nonce.
@@ -278,7 +278,7 @@ class ExtORPortProtocol(network.GenericProtocol):
             raise NeedMoreData("Not enough data for body.")
 
         result = self.buffer.read(1)
-        if result != '\x01':
+        if result != b'\x01':
             raise AuthFailed("%s: Authentication failed (%s)!" % (self.name, repr(result)))
 
         log.debug("%s: Authentication successful!" % self.name)
