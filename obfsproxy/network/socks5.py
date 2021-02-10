@@ -208,10 +208,12 @@ class SOCKSv5Protocol(protocol.Protocol):
         # Select the best method
         methods = msg.get(nmethods)
         for method in self.ACCEPTABLE_AUTH_METHODS:
+            log.error(method)
             if chr(method) in methods:
                 self.authMethod = method
                 break
         if self.authMethod == _SOCKS_AUTH_NO_ACCEPTABLE_METHODS:
+            log.error(self.authMethod)
             log.error("No Acceptable Authentication Methods")
             self.authMethod = _SOCKS_AUTH_NO_ACCEPTABLE_METHODS
 
@@ -226,7 +228,7 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg = _ByteBuffer()
         msg.add_uint8(_SOCKS_VERSION)
         msg.add_uint8(self.authMethod)
-        self.transport.write(str(msg).encode('utf-8'))
+        self.transport.write(str(msg).encode('ISO-8859-1'))
 
         if self.authMethod == _SOCKS_AUTH_NO_ACCEPTABLE_METHODS:
             self.transport.loseConnection()
@@ -313,11 +315,11 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg.add_uint8(_SOCKS_RFC1929_VER)
         if success:
             msg.add_uint8(_SOCKS_RFC1929_SUCCESS)
-            self.transport.write(str(msg).encode('utf-8'))
+            self.transport.write(str(msg).encode('ISO-8859-1'))
             self.state = self.ST_READ_REQUEST
         else:
             msg.add_uint8(_SOCKS_RFC1929_FAIL)
-            self.transport.write(str(msg).encode('utf-8'))
+            self.transport.write(str(msg).encode('ISO-8859-1'))
             self.transport.loseConnection()
 
     def processNoAuthRequired(self):
@@ -469,7 +471,7 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg.add_uint8(atype)
         msg.add(addr)
         msg.add_uint16(port, True)
-        self.transport.write(str(msg).encode('utf-8'))
+        self.transport.write(str(msg).encode('ISO-8859-1'))
 
         if reply == SOCKSv5Reply.Succeeded:
             self.state = self.ST_ESTABLISHED

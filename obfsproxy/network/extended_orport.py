@@ -42,7 +42,7 @@ EXT_OR_CMD_BT_CONTROL = 0x1002
 AUTH_COOKIE_LEN = 32
 AUTH_COOKIE_HEADER_LEN = 32
 AUTH_COOKIE_FILE_LEN = AUTH_COOKIE_LEN + AUTH_COOKIE_HEADER_LEN
-AUTH_COOKIE_HEADER = "! Extended ORPort Auth Cookie !\x0a"
+AUTH_COOKIE_HEADER = b"! Extended ORPort Auth Cookie !\x0a"
 
 def _read_auth_cookie(cookie_path):
     """
