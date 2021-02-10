@@ -35,6 +35,8 @@ setup(
         'twisted==20.3.0',
         'argparse',
         'pyptlib @ https://github.com/notem/pyptlib3/archive/main.zip',
+        'psutil',
+        'pyyaml',
         #'numpy'
         #'scipy',
         ],
