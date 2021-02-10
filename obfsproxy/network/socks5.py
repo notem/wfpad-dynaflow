@@ -313,7 +313,7 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg.add_uint8(_SOCKS_RFC1929_VER)
         if success:
             msg.add_uint8(_SOCKS_RFC1929_SUCCESS)
-            self.transport.write(str(msg).encoding('utf-8')
+            self.transport.write(str(msg).encoding('utf-8'))
             self.state = self.ST_READ_REQUEST
         else:
             msg.add_uint8(_SOCKS_RFC1929_FAIL)
