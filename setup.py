@@ -32,9 +32,9 @@ setup(
     install_requires = [
         'setuptools',
         'PyCrypto',
-        'Twisted',
+        'twisted==20.3.0',
         'argparse',
-        'pyptlib >= 0.0.6',
+        'pyptlib @ https://github.com/notem/pyptlib3/archive/main.zip',
         #'numpy'
         #'scipy',
         ],

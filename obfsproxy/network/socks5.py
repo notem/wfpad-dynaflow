@@ -56,9 +56,10 @@ class SOCKSv5Reply(object):
     SOCKSv5 reply codes
     """
 
-    __slots__ = ['Succeded', 'GeneralFailure', 'ConnectionNotAllowed',
-                 'NetworkUnreachable', 'HostUnreachable', 'ConnectionRefused',
-                 'TTLExpired', 'CommandNotSupported', 'AddressTypeNotSupported']
+    #__slots__ = ['Succeded', 'GeneralFailure', 'ConnectionNotAllowed',
+    #             'NetworkUnreachable', 'HostUnreachable', 'ConnectionRefused',
+    #             'TTLExpired', 'CommandNotSupported', 'AddressTypeNotSupported']
+    __slots__ = ['Succeded']
 
     Succeeded = 0x00
     GeneralFailure = 0x01

@@ -39,6 +39,7 @@ def set_up_cli_parsing():
     parser = argparser.MyArgumentParser(
         description='py-obfsproxy: A pluggable transports proxy written in Python')
     subparsers = parser.add_subparsers(title='supported transports', dest='name')
+    subparsers.required = True
 
     parser.add_argument('-v', '--version', action='version', version=__version__)
     parser.add_argument('--log-file', help='set logfile')

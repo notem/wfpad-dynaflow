@@ -1,4 +1,3 @@
-from sets import Set
 
 import obfsproxy.common.log as logging
 from obfsproxy.transports.wfpadtools.util import genutil as gu
@@ -37,7 +36,7 @@ class WFPadShimObserver(object):
         if self._sessId in self._sessions:
             self._sessions[self._sessId].add(connId)
         else:
-            self._sessions[self._sessId] = Set([connId])
+            self._sessions[self._sessId] = set([connId])
 
     def onDisconnect(self, connId):
         """Remove id of connection to the set of open connections."""
