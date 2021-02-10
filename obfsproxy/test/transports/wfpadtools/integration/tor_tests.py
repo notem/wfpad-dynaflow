@@ -77,7 +77,7 @@ class UnmanagedTorTest(tester.TransportsSetUp):
             super(UnmanagedTorTest, self).tearDown()
             if LEAVE_TOR_RUNNING:
                 return
-            for torend_name, torend in self.tor_endpoints.iteritems():
+            for torend_name, torend in self.tor_endpoints.items():
                 self.terminate_process_and_log(torend,
                                        "TEST: killed Tor {}."
                                             .format(torend_name))
@@ -89,7 +89,7 @@ class UnmanagedTorTest(tester.TransportsSetUp):
     def tearDownClass(cls):
         super(UnmanagedTorTest, cls).tearDownClass()
         try:
-            for datadir in DATA_DIRS.itervalues():
+            for datadir in DATA_DIRS.values():
                 pidfile = join(datadir, "pid")
                 if exists(pidfile):
                     pid = int(fu.read_file(pidfile))
@@ -165,7 +165,7 @@ class UnmanagedTorTest(tester.TransportsSetUp):
         self.assertEqual(resp.status_code, 200,
                          "The status code (%s) is not OK."
                          % resp.status_code)
-        self.failUnless(resp.text)  # make sure it has a body
+        self.assertTrue(resp.text)  # make sure it has a body
         self.assertIn("using Tor successfully to reach the web", resp.text,
                       "Tor-check does not detect Tor: %s"
                       % resp.text)
@@ -199,7 +199,7 @@ def clean_test_setting():
         if proc.name() in processes:
             proc.kill()
             log.info(proc.name() + " killed!")
-    for dirpath in DATA_DIRS.itervalues():
+    for dirpath in DATA_DIRS.values():
         log.debug("Will remove old log directory: " + dirpath)
         fu.removedir(dirpath)
     obfs_log_prefix = "obfsproxy_tester_"

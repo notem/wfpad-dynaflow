@@ -9,9 +9,9 @@ import obfsproxy.common.log as logging
 
 import os
 import time
-import const
+from . import const
 
-import mycrypto
+from . import mycrypto
 
 log = logging.get_obfslogger()
 

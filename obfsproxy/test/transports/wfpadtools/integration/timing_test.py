@@ -25,7 +25,7 @@ class TestrRTT(wt.WFPadShimConfig, wt.SendControlMessageTest,
     args = [N, t]
 
     def doWhileSession(self):
-        for _ in xrange(self.repetitions):
+        for _ in range(self.repetitions):
             wt.SendControlMessageTest.doWhileSession(self)
 
     @unittest.skip("Skip for now.")

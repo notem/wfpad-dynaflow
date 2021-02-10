@@ -198,7 +198,7 @@ class PayloadPadTestCase(pt.SessionPrimitiveTestCase, unittest.TestCase):
         self.advance_next_delayed_call()
         self.pt_server.relayPayloadPad(sess_id, t, msg_level)
         self.advance_next_delayed_call()
-        for _ in xrange(n_data_msgs):
+        for _ in range(n_data_msgs):
             self.send_timestamp(self.pt_client)
             self.advance_next_delayed_call()
         self.advance_delayed_calls(max_dcalls=n_padd_msgs)
@@ -225,7 +225,7 @@ class BatchPadTestCase(pt.SessionPrimitiveTestCase, unittest.TestCase):
         self.advance_next_delayed_call()
         self.pt_server.relayBatchPad(sess_id, L, t, msg_level)
         self.advance_next_delayed_call()
-        for _ in xrange(n_data_msgs):
+        for _ in range(n_data_msgs):
             self.send_timestamp(self.pt_client)
             self.advance_next_delayed_call()
         self.advance_delayed_calls(max_dcalls=n_padd_msgs)
@@ -247,7 +247,7 @@ class BatchPadTestCase(pt.SessionPrimitiveTestCase, unittest.TestCase):
         self.advance_next_delayed_call()
         self.pt_server.relayBatchPad(sess_id, L, t, msg_level)
         self.advance_next_delayed_call()
-        for _ in xrange(n_data_msgs):
+        for _ in range(n_data_msgs):
             self.send_timestamp(self.pt_client)
             self.advance_next_delayed_call()
         self.advance_delayed_calls(max_dcalls=n_padd_msgs)

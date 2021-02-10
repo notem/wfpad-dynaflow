@@ -16,7 +16,7 @@ import obfsproxy.common.log as logging
 import math
 import os
 
-import const
+from . import const
 
 log = logging.get_obfslogger()
 

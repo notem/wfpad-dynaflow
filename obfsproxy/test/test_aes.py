@@ -8,7 +8,7 @@ import twisted.trial.unittest
 
 class testAES_CTR_128_NIST(twisted.trial.unittest.TestCase):
     def _helper_test_vector(self, input_block, output_block, plaintext, ciphertext):
-        self.assertEqual(long(input_block.encode('hex'), 16), self.ctr.next_value())
+        self.assertEqual(int(input_block.encode('hex'), 16), self.ctr.next_value())
 
         ct = self.cipher.encrypt(plaintext)
         self.assertEqual(ct, ciphertext)
@@ -20,7 +20,7 @@ class testAES_CTR_128_NIST(twisted.trial.unittest.TestCase):
         key = "\x2b\x7e\x15\x16\x28\xae\xd2\xa6\xab\xf7\x15\x88\x09\xcf\x4f\x3c"
         iv = "\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff"
 
-        self.ctr = Counter.new(128, initial_value=long(iv.encode('hex'), 16))
+        self.ctr = Counter.new(128, initial_value=int(iv.encode('hex'), 16))
         self.cipher = AES.new(key, AES.MODE_CTR, counter=self.ctr)
 
         input_block = "\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff"

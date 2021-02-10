@@ -8,7 +8,7 @@ directory, and you need to have Python 2.6 or better (but not 3).
 You need to be able to make connections to arbitrary high-numbered
 TCP ports on the loopback interface.
 """
-import Queue
+import queue
 import difflib
 import errno
 import multiprocessing
@@ -119,7 +119,7 @@ def connect_with_retry(addr):
     while True:
         try:
             return socket.create_connection(addr)
-        except socket.error, e:
+        except socket.error as e:
             if e.errno != errno.ECONNREFUSED: raise
             if retry == 20: raise
             retry += 1
@@ -152,7 +152,7 @@ class ReadWorker(object):
                 data += chunk
         except socket.timeout:
             pass
-        except Exception, e:
+        except Exception as e:
             data += "|RECV ERROR: " + e
         conn.close()
         oq.put(data)
@@ -223,7 +223,7 @@ class DirectTest(TransportsSetUp):
         time.sleep(2)
         try:
             output = self.output_reader.get()
-        except Queue.Empty:
+        except queue.Empty:
             output = ""
 
         self.input_chan.close()

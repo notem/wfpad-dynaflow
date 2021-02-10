@@ -36,7 +36,7 @@ class STTest(unittest.TestCase):
 
     def assert_is_installed(self, pkg):
         """Ensure the system package `pkg` is installed."""
-        self.failUnless(fu.is_installed(pkg),
+        self.assertTrue(fu.is_installed(pkg),
                         "Cannot find {} in your system".format(pkg))
 
     def assert_package_is_installed(self, pkg):
@@ -76,8 +76,8 @@ class DummyWriteWorker(object):
         try:
             while True:
                 writer.sendall('\0')
-        except Exception, e:
-            print "[ReadWorker] Exception %s" % str(e)
+        except Exception as e:
+            print("[ReadWorker] Exception %s" % str(e))
         writer.close()
 
     def __init__(self, address):
@@ -103,8 +103,8 @@ class DummyReadWorker(object):
         try:
             while True:
                 conn.recv(4096)
-        except Exception, e:
-            print "[ReadWorker] Exception %s" % str(e)
+        except Exception as e:
+            print("[ReadWorker] Exception %s" % str(e))
         conn.close()
 
     def __init__(self, address):
@@ -184,7 +184,7 @@ def instrument_rcv_upstream(func):
 def find_attr(attr, cls):
     """Return true if attribute is in any of the ancestors of class."""
     while cls:
-        if attr in cls.__dict__.keys():
+        if attr in list(cls.__dict__.keys()):
             return cls
         cls = cls.__base__
     return None

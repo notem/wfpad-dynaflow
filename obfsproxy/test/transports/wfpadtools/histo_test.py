@@ -24,13 +24,13 @@ class HistogramClassTestCase(unittest.TestCase):
     def assert_uniform(self, x):
         NUM_SAMPLES = 100
         u = histo.uniform(x)
-        for _ in xrange(NUM_SAMPLES):
+        for _ in range(NUM_SAMPLES):
             s = u.randomSample()
-            self.assertEquals(s, x)
+            self.assertEqual(s, x)
 
     def assert_mean(self, hist, m):
         NUM_SAMPLES = 1000
-        samples = [hist.randomSample() for _ in xrange(NUM_SAMPLES)]
+        samples = [hist.randomSample() for _ in range(NUM_SAMPLES)]
         mean = sum(samples) / len(samples)
         self.assertAlmostEqual(mean, m, 1)
 

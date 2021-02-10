@@ -35,7 +35,7 @@ class WFPadMessageFactoryTest(unittest.TestCase):
                          % (obsArgs, expArgs))
 
         # Test control message with arguments that do not fit
-        testArgs = range(1000)
+        testArgs = list(range(1000))
         expArgs = str(testArgs)
         ctrlMsgsArgs = self.msgFactory.encapsulate(opcode=const.OP_APP_HINT,
                                                    args=testArgs)
@@ -106,7 +106,7 @@ class WFPadMessageExtractorTest(unittest.TestCase):
                          " expected data: %s." % (obsData, testData))
 
     def test_extract_control_message(self):
-        testArgs = [range(500), range(500)]
+        testArgs = [list(range(500)), list(range(500))]
         ctrlMsgsArgs = self.msgFactory.encapsulate(opcode=const.OP_GAP_HISTO,
                                                    args=testArgs)
         strMsg = "".join([str(msg) for msg in ctrlMsgsArgs])
@@ -149,8 +149,8 @@ class WFPadMessageExtractorTest(unittest.TestCase):
                                       paddingLen=1000,
                                       flags=const.FLAG_CONTROL,
                                       opcode=const.OP_APP_HINT,
-                                      args=json.dumps([range(500),
-                                                       range(500)]))
+                                      args=json.dumps([list(range(500)),
+                                                       list(range(500))]))
         for i, msg in enumerate(msgs):
             self.assertTrue(msg == self.msgExtractor.msg_from_string(str(msg)),
                             "Messages do not match for message number %d!" % i)

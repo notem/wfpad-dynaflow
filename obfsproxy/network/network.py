@@ -162,7 +162,7 @@ class Circuit(Protocol):
             else:
                 log.debug("%s: upstream: Received %d bytes." % (self.name, len(data)))
                 self.transport.receivedUpstream(data)
-        except base.PluggableTransportError, err: # Our transport didn't like that data.
+        except base.PluggableTransportError as err: # Our transport didn't like that data.
             log.info("%s: %s: Closing circuit." % (self.name, str(err)))
             self.close()
 

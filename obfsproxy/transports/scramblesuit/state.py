@@ -10,13 +10,13 @@ generate such state information.
 import os
 import sys
 import time
-import cPickle
+import pickle
 import random
 
-import const
-import replay
-import mycrypto
-import probdist
+from . import const
+from . import replay
+from . import mycrypto
+from . import probdist
 import base64
 
 import obfsproxy.common.log as logging
@@ -44,7 +44,7 @@ def load( ):
 
     try:
         with open(stateFile, 'r') as fd:
-            stateObject = cPickle.load(fd)
+            stateObject = pickle.load(fd)
     except IOError as err:
         log.error("Error reading server state file from `%s': %s" %
                   (stateFile, err))
@@ -186,7 +186,7 @@ class State( object ):
 
         try:
             with open(stateFile, 'w') as fd:
-                cPickle.dump(self, fd)
+                pickle.dump(self, fd)
         except IOError as err:
             log.error("Error writing state file to `%s': %s" %
                       (stateFile, err))

@@ -23,8 +23,8 @@ def do_managed_server():
 
     ptserver = ServerTransportPlugin()
     try:
-        ptserver.init(transports.transports.keys())
-    except EnvError, err:
+        ptserver.init(list(transports.transports.keys()))
+    except EnvError as err:
         log.warning("Server managed-proxy protocol failed (%s)." % err)
         return
 
@@ -35,7 +35,7 @@ def do_managed_server():
     orport = ptserver.config.getORPort()
     server_transport_options = ptserver.config.getServerTransportOptions()
 
-    for transport, transport_bindaddr in ptserver.getBindAddresses().items():
+    for transport, transport_bindaddr in list(ptserver.getBindAddresses().items()):
 
         # Will hold configuration parameters for the pluggable transport module.
         pt_config = transport_config.TransportConfig()
@@ -55,7 +55,7 @@ def do_managed_server():
         transport_class = transports.get_transport_class(transport, 'server')
         try:
             transport_class.setup(pt_config)
-        except base.TransportSetupFailed, err:
+        except base.TransportSetupFailed as err:
             log.warning("Transport '%s' failed during setup()." % transport)
             ptserver.reportMethodError(transport, "setup() failed: %s." % (err))
             continue
@@ -78,7 +78,7 @@ def do_managed_server():
             log.warning("Could not find transport '%s'" % transport)
             ptserver.reportMethodError(transport, "Could not find transport.")
             continue
-        except error.CannotListenError, e:
+        except error.CannotListenError as e:
             error_msg = "Could not set up listener (%s:%s) for '%s' (%s)." % \
                         (e.interface, e.port, transport, e.socketError[1])
             log.warning(error_msg)
@@ -101,7 +101,7 @@ def do_managed_server():
         # If the transport filtered its options:
         if public_options_dict:
             optlist = []
-            for k, v in public_options_dict.items():
+            for k, v in list(public_options_dict.items()):
                 optlist.append("%s=%s" % (k,v))
             public_options_str = ",".join(optlist)
 

@@ -31,7 +31,7 @@ class KistTest(unittest.TestCase):
         while buf_capacity > const.MTU:
             client_socket.sendall('\0' * const.MTU)
             buf_capacity = estimate_write_capacity(client_socket)
-            print i, buf_capacity
+            print(i, buf_capacity)
             i += 1
         self.assertTrue(buf_capacity <= const.MTU)
         client_socket.close()
@@ -50,10 +50,10 @@ class KistTest(unittest.TestCase):
             while True:
                 conn.recv(4096)
                 buf_capacity = estimate_write_capacity(conn)
-                print i, buf_capacity
+                print(i, buf_capacity)
                 i += 1
-        except Exception, e:
-            print "[ReadWorker] Exception %s" % str(e)
+        except Exception as e:
+            print("[ReadWorker] Exception %s" % str(e))
         conn.close()
 
 

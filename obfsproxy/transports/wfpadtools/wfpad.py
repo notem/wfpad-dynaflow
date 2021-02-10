@@ -160,7 +160,7 @@ class WFPadTransport(BaseTransport, PaddingPrimitivesInterface):
 
         # By default, shim doesn't connect to socks
         if args.shim:
-            cls.shim_ports = map(int, args.shim.split(','))
+            cls.shim_ports = list(map(int, args.shim.split(',')))
             log.debug("[wfpad] Shim ports: %s", cls.shim_ports)
 
     @classmethod
@@ -438,7 +438,7 @@ class WFPadTransport(BaseTransport, PaddingPrimitivesInterface):
         msgs = []
         try:
             msgs = self._msgExtractor.extract(data)
-        except Exception, e:
+        except Exception as e:
             log.exception("[wfpad - %s] Exception extracting "
                           "messages from stream: %s", self.end, str(e))
 

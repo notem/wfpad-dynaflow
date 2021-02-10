@@ -2,7 +2,7 @@
 import os
 import sys
 import json
-import Queue
+import queue
 import socket
 import struct
 import requesocks
@@ -114,7 +114,7 @@ class Command(object):
         RECEIVE:    Data length (optional)
         CLOSE:      None
     """
-    LISTEN, CONNECT, SEND, RECEIVE, CLOSE = range(5)
+    LISTEN, CONNECT, SEND, RECEIVE, CLOSE = list(range(5))
 
     def __init__(self, command_type, data=None):
         self.type = command_type
@@ -129,7 +129,7 @@ class Reply(object):
         SUCCESS:    Depends on the command - for RECEIVE it's the received
                     data string, for others None.
     """
-    ERROR, SUCCESS = range(2)
+    ERROR, SUCCESS = list(range(2))
 
     def __init__(self, reply_type, data=None):
         self.type = reply_type
@@ -146,7 +146,7 @@ class CommunicationInterface(object):
 
     def _start(self):
         log.debug("Setting up dummy worker endpoints.")
-        for endpoint in self.endpoints.itervalues():
+        for endpoint in self.endpoints.values():
             endpoint.start()
 
     def send(self, sndr, data, op=False, wait=True):
@@ -171,12 +171,12 @@ class CommunicationInterface(object):
 
     def close(self):
         log.debug("Dummy workers are being closed.")
-        for endpoint in self.endpoints.itervalues():
+        for endpoint in self.endpoints.values():
             endpoint.cmd_q.put(Command(Command.CLOSE))
         return self.wait_replies()
 
     def terminate(self):
-        for endpoint in self.endpoints.itervalues():
+        for endpoint in self.endpoints.values():
             endpoint.join()
 
     def wait_replies(self, first='client', second='server'):
@@ -201,7 +201,7 @@ class CommunicationInterface(object):
             if reply.type is Reply.ERROR:
                 raise Exception(info_msg)
             return (reply.type, reply.data)
-        except Queue.Empty:
+        except queue.Empty:
             return None
 
 
@@ -216,8 +216,8 @@ class SocketThread(threading.Thread):
     def __init__(self, cmd_q=None,
                  reply_q=None, use_header=False, extra_handlers=None):
         super(SocketThread, self).__init__()
-        self.cmd_q = cmd_q or Queue.Queue()
-        self.reply_q = reply_q or Queue.Queue()
+        self.cmd_q = cmd_q or queue.Queue()
+        self.reply_q = reply_q or queue.Queue()
         self.alive = threading.Event()
         self.alive.set()
         self.socket = None
@@ -229,7 +229,7 @@ class SocketThread(threading.Thread):
             Command.SEND: self._handle_SEND,
             Command.RECEIVE: self._handle_RECEIVE,
         }
-        for key, handler in extra_handlers.iteritems():
+        for key, handler in extra_handlers.items():
             self.handlers[key] = handler
 
     def run(self):
@@ -238,7 +238,7 @@ class SocketThread(threading.Thread):
                 # Queue.get with timeout to allow checking self.alive
                 cmd = self.cmd_q.get(True, 0.1)
                 self.handlers[cmd.type](cmd)
-            except Queue.Empty:
+            except queue.Empty:
                 continue
 
     def join(self, timeout=None):
@@ -336,7 +336,7 @@ class SocketServerThread(SocketThread):
 
 def rand_ip():
     """Return a random IP (non-realistic)."""
-    return ".".join([str(randint(1, 254)) for _ in xrange(4)])
+    return ".".join([str(randint(1, 254)) for _ in range(4)])
 
 
 def get_local_ip():
@@ -356,7 +356,7 @@ def get_free_ports(n=1):
     the end of this function, till a new socket is bind to it.
     """
     ports, socks = [], []
-    for _ in xrange(n):
+    for _ in range(n):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind(('', 0))
         free_port = s.getsockname()[1]
@@ -377,8 +377,8 @@ def toIP(ipaddr):
 
 def get_url(url):
     """Return body of HTTP request to `url`."""
-    import urllib2
-    response = urllib2.urlopen('http://python.org/')
+    import urllib.request, urllib.error, urllib.parse
+    response = urllib.request.urlopen('http://python.org/')
     html = response.read()
     return html
 

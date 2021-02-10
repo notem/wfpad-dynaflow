@@ -346,7 +346,7 @@ class PrimitiveTest(SetUpTest):
     def __load_wrapper(self, end):
         """Attempts to load a dump of an endpoint from a file."""
         max_retries = 10
-        for _ in xrange(max_retries):
+        for _ in range(max_retries):
             try:
                 return du.pick_load(const.DUMPS[end])
             except:
@@ -384,7 +384,7 @@ class PadPrimitiveTest(PrimitiveTest):
 
     def doBeforeSessionStarts(self):
         self.send_instruction(const.OP_SEND_PADDING, [self.junk_msgs, 0])
-        for _ in xrange(self.real_msgs):
+        for _ in range(self.real_msgs):
             self.send_to_server(self.DATA_STR)
 
     def doWhileSession(self):

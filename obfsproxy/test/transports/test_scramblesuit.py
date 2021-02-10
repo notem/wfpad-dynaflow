@@ -46,9 +46,9 @@ class CryptoTest( unittest.TestCase ):
 
     def runHKDF( self, ikm, salt, info, prk, okm ):
         myprk = self.extract(salt, ikm)
-        self.failIf(myprk != prk)
+        self.assertFalse(myprk != prk)
         myokm = mycrypto.HKDF_SHA256(myprk, info).expand()
-        self.failUnless(myokm in okm)
+        self.assertTrue(myokm in okm)
 
     def test1_HKDF_TestCase1( self ):
 
@@ -107,8 +107,8 @@ class CryptoTest( unittest.TestCase ):
         self.assertRaises(base.PluggableTransportError, hkdf.expand)
 
     def test4_CSPRNG( self ):
-        self.failIf(mycrypto.strongRandom(10) == mycrypto.strongRandom(10))
-        self.failIf(len(mycrypto.strongRandom(100)) != 100)
+        self.assertFalse(mycrypto.strongRandom(10) == mycrypto.strongRandom(10))
+        self.assertFalse(len(mycrypto.strongRandom(100)) != 100)
 
     def test5_AES( self ):
         plain = "this is a test"
@@ -122,14 +122,14 @@ class CryptoTest( unittest.TestCase ):
 
         cipher = crypter1.encrypt(plain)
 
-        self.failIf(cipher == plain)
-        self.failUnless(crypter2.decrypt(cipher) == plain)
+        self.assertFalse(cipher == plain)
+        self.assertTrue(crypter2.decrypt(cipher) == plain)
 
     def test6_HMAC_SHA256_128( self ):
         self.assertRaises(AssertionError, mycrypto.HMAC_SHA256_128,
                           "x" * (const.SHARED_SECRET_LENGTH - 1), "test")
 
-        self.failUnless(len(mycrypto.HMAC_SHA256_128("x" * \
+        self.assertTrue(len(mycrypto.HMAC_SHA256_128("x" * \
                         const.SHARED_SECRET_LENGTH, "test")) == 16)
 
 
@@ -141,7 +141,7 @@ class UniformDHTest( unittest.TestCase ):
 
     def test1_createHandshake( self ):
         handshake = self.udh.createHandshake()
-        self.failUnless((const.PUBLIC_KEY_LENGTH +
+        self.assertTrue((const.PUBLIC_KEY_LENGTH +
                          const.MARK_LENGTH +
                          const.HMAC_SHA256_128_LENGTH) <= len(handshake) <=
                         (const.MARK_LENGTH +
@@ -152,12 +152,12 @@ class UniformDHTest( unittest.TestCase ):
         buf = obfs_buf.Buffer(self.udh.createHandshake())
 
         def callback( masterKey ):
-            self.failUnless(len(masterKey) == const.MASTER_KEY_LENGTH)
+            self.assertTrue(len(masterKey) == const.MASTER_KEY_LENGTH)
 
-        self.failUnless(self.udh.receivePublicKey(buf, callback) == True)
+        self.assertTrue(self.udh.receivePublicKey(buf, callback) == True)
 
         publicKey = self.udh.getRemotePublicKey()
-        self.failUnless(len(publicKey) == const.PUBLIC_KEY_LENGTH)
+        self.assertTrue(len(publicKey) == const.PUBLIC_KEY_LENGTH)
 
     def test3_invalidHMAC( self ):
         # Make the HMAC invalid.
@@ -169,7 +169,7 @@ class UniformDHTest( unittest.TestCase ):
 
         buf = obfs_buf.Buffer(handshake)
 
-        self.failIf(self.udh.receivePublicKey(buf, lambda x: x) == True)
+        self.assertFalse(self.udh.receivePublicKey(buf, lambda x: x) == True)
 
     def test4_extractPublicKey( self ):
 
@@ -198,27 +198,27 @@ class UniformDHTest( unittest.TestCase ):
 class UtilTest( unittest.TestCase ):
 
     def test1_isValidHMAC( self ):
-        self.failIf(util.isValidHMAC("A" * const.HMAC_SHA256_128_LENGTH,
+        self.assertFalse(util.isValidHMAC("A" * const.HMAC_SHA256_128_LENGTH,
                                      "B" * const.HMAC_SHA256_128_LENGTH,
                                      "X" * const.SHA256_LENGTH) == True)
-        self.failIf(util.isValidHMAC("A" * const.HMAC_SHA256_128_LENGTH,
+        self.assertFalse(util.isValidHMAC("A" * const.HMAC_SHA256_128_LENGTH,
                                      "A" * const.HMAC_SHA256_128_LENGTH,
                                      "X" * const.SHA256_LENGTH) == False)
 
     def test2_locateMark( self ):
-        self.failIf(util.locateMark("D", "ABC") != None)
+        self.assertFalse(util.locateMark("D", "ABC") != None)
 
         hmac = "X" * const.HMAC_SHA256_128_LENGTH
         mark = "A" * const.MARK_LENGTH
         payload = mark + hmac
 
-        self.failIf(util.locateMark(mark, payload) == None)
-        self.failIf(util.locateMark(mark, payload[:-1]) != None)
+        self.assertFalse(util.locateMark(mark, payload) == None)
+        self.assertFalse(util.locateMark(mark, payload[:-1]) != None)
 
     def test3_sanitiseBase32( self ):
-        self.failUnless(util.sanitiseBase32("abc") == "ABC")
-        self.failUnless(util.sanitiseBase32("ABC1XYZ") == "ABCIXYZ")
-        self.failUnless(util.sanitiseBase32("ABC1XYZ0") == "ABCIXYZO")
+        self.assertTrue(util.sanitiseBase32("abc") == "ABC")
+        self.assertTrue(util.sanitiseBase32("ABC1XYZ") == "ABCIXYZ")
+        self.assertTrue(util.sanitiseBase32("ABC1XYZ0") == "ABCIXYZO")
 
     def test4_setStateLocation( self ):
         name = (const.TRANSPORT_NAME).lower()
@@ -226,26 +226,26 @@ class UtilTest( unittest.TestCase ):
         # Check if function creates non-existant directories.
         d = tempfile.mkdtemp()
         util.setStateLocation(d)
-        self.failUnless(const.STATE_LOCATION == "%s/%s/" % (d, name))
-        self.failUnless(os.path.exists("%s/%s/" % (d, name)))
+        self.assertTrue(const.STATE_LOCATION == "%s/%s/" % (d, name))
+        self.assertTrue(os.path.exists("%s/%s/" % (d, name)))
 
         # Nothing should change if we pass "None".
         util.setStateLocation(None)
-        self.failUnless(const.STATE_LOCATION == "%s/%s/" % (d, name))
+        self.assertTrue(const.STATE_LOCATION == "%s/%s/" % (d, name))
 
         shutil.rmtree(d)
 
     def test5_getEpoch( self ):
         e = util.getEpoch()
-        self.failUnless(isinstance(e, basestring))
+        self.assertTrue(isinstance(e, str))
 
     def test7_readFromFile( self ):
 
         # Read from non-existant file.
-        self.failUnless(util.readFromFile(tempfile.mktemp()) == None)
+        self.assertTrue(util.readFromFile(tempfile.mktemp()) == None)
 
         # Read file where we (hopefully) don't have permissions.
-        self.failUnless(util.readFromFile("/etc/shadow") == None)
+        self.assertTrue(util.readFromFile("/etc/shadow") == None)
 
 class StateTest( unittest.TestCase ):
     def setUp( self ):
@@ -261,36 +261,36 @@ class StateTest( unittest.TestCase ):
 
     def test1_genState( self ):
         self.state.genState()
-        self.failUnless(os.path.exists(self.stateFile))
+        self.assertTrue(os.path.exists(self.stateFile))
 
     def test2_loadState( self ):
         # load() should create the state file if it doesn't exist yet.
-        self.failIf(os.path.exists(self.stateFile))
-        self.failUnless(isinstance(state.load(), state.State))
-        self.failUnless(os.path.exists(self.stateFile))
+        self.assertFalse(os.path.exists(self.stateFile))
+        self.assertTrue(isinstance(state.load(), state.State))
+        self.assertTrue(os.path.exists(self.stateFile))
 
     def test3_replay( self ):
         key = "A" * const.HMAC_SHA256_128_LENGTH
         self.state.genState()
         self.state.registerKey(key)
-        self.failUnless(self.state.isReplayed(key))
-        self.failIf(self.state.isReplayed("B" * const.HMAC_SHA256_128_LENGTH))
+        self.assertTrue(self.state.isReplayed(key))
+        self.assertFalse(self.state.isReplayed("B" * const.HMAC_SHA256_128_LENGTH))
 
     def test4_ioerrorFail( self ):
         def fake_open(name, mode):
             raise IOError()
         self.state.genState()
 
-        import __builtin__
-        real_open = __builtin__.open
-        __builtin__.open = fake_open
+        import builtins
+        real_open = builtins.open
+        builtins.open = fake_open
 
         # Make state.load() fail
         self.assertRaises(SystemExit, state.load)
         # Make State.writeState() fail.
         self.assertRaises(SystemExit, self.state.genState)
 
-        __builtin__.open = real_open
+        builtins.open = real_open
 
 class MockArgs( object ):
     uniformDHSecret = sharedSecret = ext_cookie_file = dest = None
@@ -344,42 +344,42 @@ class ScrambleSuitTransportTest( unittest.TestCase ):
 
         scramblesuit.ScrambleSuitTransport.setup(transCfg)
         options = scramblesuit.ScrambleSuitTransport.get_public_server_options("")
-        self.failUnless("password" in options)
+        self.assertTrue("password" in options)
 
         d = { "password": "3X5BIA2MIHLZ55UV4VAEGKZIQPPZ4QT3" }
         options = scramblesuit.ScrambleSuitTransport.get_public_server_options(d)
-        self.failUnless("password" in options)
-        self.failUnless(options["password"] == "3X5BIA2MIHLZ55UV4VAEGKZIQPPZ4QT3")
+        self.assertTrue("password" in options)
+        self.assertTrue(options["password"] == "3X5BIA2MIHLZ55UV4VAEGKZIQPPZ4QT3")
 
 class MessageTest( unittest.TestCase ):
 
     def test1_createProtocolMessages( self ):
         # An empty message consists only of a header.
-        self.failUnless(len(message.createProtocolMessages("")[0]) == \
+        self.assertTrue(len(message.createProtocolMessages("")[0]) == \
                         const.HDR_LENGTH)
 
         msg = message.createProtocolMessages('X' * const.MPU)
-        self.failUnless((len(msg) == 1) and (len(msg[0]) == const.MTU))
+        self.assertTrue((len(msg) == 1) and (len(msg[0]) == const.MTU))
 
         msg = message.createProtocolMessages('X' * (const.MPU + 1))
-        self.failUnless((len(msg) == 2) and \
+        self.assertTrue((len(msg) == 2) and \
                         (len(msg[0]) == const.MTU) and \
                         (len(msg[1]) == (const.HDR_LENGTH + 1)))
 
     def test2_getFlagNames( self ):
-        self.failUnless(message.getFlagNames(0) == "Undefined")
-        self.failUnless(message.getFlagNames(1) == "PAYLOAD")
-        self.failUnless(message.getFlagNames(2) == "NEW_TICKET")
-        self.failUnless(message.getFlagNames(4) == "PRNG_SEED")
+        self.assertTrue(message.getFlagNames(0) == "Undefined")
+        self.assertTrue(message.getFlagNames(1) == "PAYLOAD")
+        self.assertTrue(message.getFlagNames(2) == "NEW_TICKET")
+        self.assertTrue(message.getFlagNames(4) == "PRNG_SEED")
 
     def test3_isSane( self ):
-        self.failUnless(message.isSane(0, 0, const.FLAG_NEW_TICKET) == True)
-        self.failUnless(message.isSane(const.MPU, const.MPU,
+        self.assertTrue(message.isSane(0, 0, const.FLAG_NEW_TICKET) == True)
+        self.assertTrue(message.isSane(const.MPU, const.MPU,
                                        const.FLAG_PRNG_SEED) == True)
-        self.failUnless(message.isSane(const.MPU + 1, 0,
+        self.assertTrue(message.isSane(const.MPU + 1, 0,
                                        const.FLAG_PAYLOAD) == False)
-        self.failUnless(message.isSane(0, 0, 1234) == False)
-        self.failUnless(message.isSane(0, 1, const.FLAG_PAYLOAD) == False)
+        self.assertTrue(message.isSane(0, 0, 1234) == False)
+        self.assertTrue(message.isSane(0, 1, const.FLAG_PAYLOAD) == False)
 
     def test4_ProtocolMessage( self ):
         flags = [const.FLAG_NEW_TICKET,
@@ -436,14 +436,14 @@ class PacketMorpher( unittest.TestCase ):
 
         def checkDistribution( dist ):
             pm = packetmorpher.new(dist)
-            for i in xrange(0, const.MTU + 2):
+            for i in range(0, const.MTU + 2):
                 padLen = pm.calcPadding(i)
                 self.assertTrue(const.HDR_LENGTH <= \
                                 padLen < \
                                 (const.MTU + const.HDR_LENGTH))
 
         # Test randomly generated distributions.
-        for i in xrange(0, 100):
+        for i in range(0, 100):
             checkDistribution(None)
 
         # Test border-case distributions.
@@ -458,7 +458,7 @@ class PacketMorpher( unittest.TestCase ):
         sendCrypter.setSessionKey("A" * 32,  "A" * 8)
         sendHMAC = "A" * 32
 
-        for i in xrange(0, const.MTU + 2):
+        for i in range(0, const.MTU + 2):
             padLen = len(pm.getPadding(sendCrypter, sendHMAC, i))
             self.assertTrue(const.HDR_LENGTH <= padLen < const.MTU + \
                             const.HDR_LENGTH)

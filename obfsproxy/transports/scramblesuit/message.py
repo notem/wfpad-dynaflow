@@ -10,8 +10,8 @@ import obfsproxy.common.log as logging
 import obfsproxy.common.serialize as pack
 import obfsproxy.transports.base as base
 
-import mycrypto
-import const
+from . import mycrypto
+from . import const
 
 log = logging.get_obfslogger()
 

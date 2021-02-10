@@ -16,16 +16,16 @@ import base64
 import yaml
 import argparse
 
-import probdist
-import mycrypto
-import message
-import const
-import util
-import packetmorpher
-import ticket
-import uniformdh
-import state
-import fifobuf
+from . import probdist
+from . import mycrypto
+from . import message
+from . import const
+from . import util
+from . import packetmorpher
+from . import ticket
+from . import uniformdh
+from . import state
+from . import fifobuf
 
 
 log = logging.get_obfslogger()

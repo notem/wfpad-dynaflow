@@ -36,7 +36,7 @@ def deferLater(*args, **kargs):
 
 
 def cast_dictionary_to_type(d, t):
-    return {t(k): v for k, v in d.iteritems()}
+    return {t(k): v for k, v in d.items()}
 
 
 def bytes_after_total_padding(total_bytes, psize=1):

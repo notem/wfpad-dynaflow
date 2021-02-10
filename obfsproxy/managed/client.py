@@ -24,8 +24,8 @@ def do_managed_client():
 
     ptclient = ClientTransportPlugin()
     try:
-        ptclient.init(transports.transports.keys())
-    except EnvError, err:
+        ptclient.init(list(transports.transports.keys()))
+    except EnvError as err:
         log.warning("Client managed-proxy protocol failed (%s)." % err)
         return
 
@@ -37,7 +37,7 @@ def do_managed_client():
         # Make sure that we have all the necessary dependencies
         try:
             network.ensure_outgoing_proxy_dependencies()
-        except network.OutgoingProxyDepsFailure, err:
+        except network.OutgoingProxyDepsFailure as err:
             ptclient.reportProxyError(str(err))
             return
 
@@ -56,7 +56,7 @@ def do_managed_client():
         transport_class = transports.get_transport_class(transport, 'socks')
         try:
             transport_class.setup(pt_config)
-        except base.TransportSetupFailed, err:
+        except base.TransportSetupFailed as err:
             log.warning("Transport '%s' failed during setup()." % transport)
             ptclient.reportMethodError(transport, "setup() failed: %s." % (err))
             continue
@@ -67,7 +67,7 @@ def do_managed_client():
             log.warning("Could not find transport '%s'" % transport)
             ptclient.reportMethodError(transport, "Could not find transport.")
             continue
-        except error.CannotListenError, e:
+        except error.CannotListenError as e:
             error_msg = "Could not set up listener (%s:%s) for '%s' (%s)." % \
                         (e.interface, e.port, transport, e.socketError[1])
             log.warning(error_msg)

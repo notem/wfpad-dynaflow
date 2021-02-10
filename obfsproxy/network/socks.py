@@ -17,7 +17,7 @@ def _split_socks_args(args_str):
     semicolons, and with semicolons and backslashes escaped), parse it
     and return a list of the unescaped SOCKS arguments.
     """
-    return csv.reader([args_str], delimiter=';', escapechar='\\').next()
+    return next(csv.reader([args_str], delimiter=';', escapechar='\\'))
 
 
 class OBFSSOCKSv5Outgoing(socks5.SOCKSv5Outgoing, network.GenericProtocol):
@@ -130,7 +130,7 @@ class OBFSSOCKSv5Protocol(socks5.SOCKSv5Protocol, network.GenericProtocol):
         # dict.
         try:
             split_args = _split_socks_args(args)
-        except csvError, err:
+        except csvError as err:
             log.warning("split_socks_args failed (%s)" % str(err))
             return False
 

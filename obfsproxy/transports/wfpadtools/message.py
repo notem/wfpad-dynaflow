@@ -336,7 +336,7 @@ class WFPadMessageExtractor(object):
         if toLog:
             log.debug(state)
         else:
-            print state
+            print(state)
 
     def reset(self):
         """Reset class properties to their initial value.

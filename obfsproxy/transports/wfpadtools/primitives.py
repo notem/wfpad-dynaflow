@@ -82,7 +82,7 @@ class PaddingPrimitivesInterface(object):
         """
         millisec = t
         deferreds = []
-        for _ in xrange(N):
+        for _ in range(N):
             deferreds.append(deferLater(millisec, self.sendIgnore))
         return defer.DeferredList(deferreds, consumeErrors=True)
 
@@ -332,17 +332,17 @@ class PaddingPrimitivesInterface(object):
         """
         try:
             self.receiveSessionPageId(page_id)
-        except Exception, e:
+        except Exception as e:
             log.exception("[primitives] failed to relay session page ID to child transport.")
 
     def relayEndBurst(self):
         try:
             self.whenFakeBurstEnds()
-        except Exception, e:
+        except Exception as e:
             log.exception("[primitives] failed to signal to child transport that a fake burst has ended.")
 
     def relayTalkieStart(self):
         try:
             self.startTalkieBurst()
-        except Exception, e:
+        except Exception as e:
             log.exception("[primitives] failed to signal to child transport that the next walkie-talkie burst has started.")

@@ -8,9 +8,9 @@ morphed network data should then match the probability distribution.
 
 import random
 
-import message
-import probdist
-import const
+from . import message
+from . import probdist
+from . import const
 
 import obfsproxy.common.log as logging
 

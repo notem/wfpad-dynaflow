@@ -412,7 +412,7 @@ class WalkieTalkieListener(object):
     def listen(self):
         try:
             d = self._ep.listen(self._ServerFactory(self))
-        except Exception, e:
+        except Exception as e:
             log.exception("[wt-listener - %s] Error when listening on port %d:", self._transport.end, self._port, e)
 
     def setCrawler(self, connection):

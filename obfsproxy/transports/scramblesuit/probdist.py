@@ -7,7 +7,7 @@ distributions.  Random samples can then be drawn from these distributions.
 
 import random
 
-import const
+from . import const
 
 import obfsproxy.common.log as logging
 
@@ -52,7 +52,7 @@ class RandProbDist:
         # Cumulative probability of all bins.
         cumulProb = 0
 
-        for _ in xrange(bins):
+        for _ in range(bins):
             prob = self.prng.uniform(0, (1 - cumulProb))
             cumulProb += prob
 
@@ -73,7 +73,7 @@ class RandProbDist:
 
         log.debug("Dumping probability distribution.")
 
-        for singleton in self.dist.iterkeys():
+        for singleton in self.dist.keys():
             # We are not interested in tiny probabilities.
             if self.dist[singleton] > 0.01:
                 log.debug("P(%s) = %.3f" %

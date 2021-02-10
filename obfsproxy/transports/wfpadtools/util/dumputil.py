@@ -1,6 +1,6 @@
 import inspect
 import json
-import cPickle as pick
+import pickle as pick
 from os.path import join, isfile, basename, dirname
 
 # WFPadTools imports

@@ -67,7 +67,7 @@ class Buffer(object):
         """Returns length of buffer. Used in len()."""
         return len(self.buffer)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """
         Returns True if the buffer is non-empty.
         Used in truth-value testing.

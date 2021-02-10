@@ -14,7 +14,7 @@ class testBuffer(twisted.trial.unittest.TestCase):
 
     def test_byte_by_byte(self):
         """Read one byte at a time."""
-        for i in xrange(len(self.test_string)):
+        for i in range(len(self.test_string)):
             self.assertEqual(self.buf.read(1), self.test_string[i])
 
     def test_bigread(self):

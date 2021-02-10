@@ -69,7 +69,7 @@ def _read_auth_cookie(cookie_path):
 
             return f.read(AUTH_COOKIE_LEN) # nexta 32 bytes should be the cookie.
 
-    except IOError, exc:
+    except IOError as exc:
         raise CouldNotReadCookie("Unable to read '%s' (%s)" % (cookie_path, exc))
 
 class ExtORPortProtocol(network.GenericProtocol):
@@ -132,7 +132,7 @@ class ExtORPortProtocol(network.GenericProtocol):
                 self._handle_auth_types()
             except NeedMoreData:
                 return
-            except UnsupportedAuthTypes, err:
+            except UnsupportedAuthTypes as err:
                 log.warning("Extended ORPort Cookie Authentication failed: %s" % err)
                 self.close()
                 return
@@ -156,7 +156,7 @@ class ExtORPortProtocol(network.GenericProtocol):
                 self._handle_auth_results()
             except NeedMoreData:
                 return
-            except AuthFailed, err:
+            except AuthFailed as err:
                 log.warning("Extended ORPort Cookie Authentication failed: %s" % err)
                 self.close()
                 return

@@ -19,7 +19,7 @@ The 64-byte encrypted state contains:
 
 import os
 import time
-import const
+from . import const
 import yaml
 import struct
 import random
@@ -32,9 +32,9 @@ from twisted.internet.address import IPv4Address
 
 import obfsproxy.common.log as logging
 
-import mycrypto
-import util
-import state
+from . import mycrypto
+from . import util
+from . import state
 
 log = logging.get_obfslogger()
 
@@ -374,18 +374,18 @@ if __name__ == "__main__":
                         "issued ticket is written to.")
     args = parser.parse_args()
 
-    print "[+] Loading server state file."
+    print("[+] Loading server state file.")
     serverState = state.load()
 
-    print "[+] Generating new session ticket."
+    print("[+] Generating new session ticket.")
     masterKey = mycrypto.strongRandom(const.MASTER_KEY_LENGTH)
     ticket = SessionTicket(masterKey, serverState).issue()
 
-    print "[+] Writing new session ticket to `%s'." % args.ticket_file
+    print("[+] Writing new session ticket to `%s'." % args.ticket_file)
     tickets = dict()
     server = IPv4Address('TCP', args.ip_addr, args.tcp_port)
     tickets[str(server)] = [int(time.time()), masterKey, ticket]
 
     util.writeToFile(yaml.dump(tickets), args.ticket_file)
 
-    print "[+] Success."
+    print("[+] Success.")

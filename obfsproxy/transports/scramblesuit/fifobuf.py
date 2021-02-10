@@ -7,9 +7,9 @@ Ben Timby: http://ben.timby.com/?p=139
 """
 
 try:
-    from cStringIO import StringIO
+    from io import StringIO
 except ImportError:
-    from StringIO import StringIO
+    from io import StringIO
 
 MAX_BUFFER = 1024**2*4
 

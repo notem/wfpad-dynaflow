@@ -5,7 +5,7 @@ import obfsproxy.common.modexp as modexp
 
 def int_to_bytes(lvalue, width):
     fmt = '%%.%dx' % (2*width)
-    return binascii.unhexlify(fmt % (lvalue & ((1L<<8*width)-1)))
+    return binascii.unhexlify(fmt % (lvalue & ((1<<8*width)-1)))
 
 class UniformDH:
     """

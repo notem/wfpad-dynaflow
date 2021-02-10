@@ -20,7 +20,7 @@ def addrport(string):
     """
     try:
         return pyptlib.util.parse_addr_spec(string, resolve=True)
-    except ValueError, err:
+    except ValueError as err:
         raise argparse.ArgumentTypeError(err)
 
 class BaseTransport(object):

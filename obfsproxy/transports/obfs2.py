@@ -43,7 +43,7 @@ def hn(x, n):
     """ H^n(x) is H(x) called iteratively n times. """
 
     data = x
-    for _ in xrange(n):
+    for _ in range(n):
         data = h(data)
     return data
 
@@ -129,7 +129,7 @@ class Obfs2Transport(base.BaseTransport):
 
         try:
             super(Obfs2Transport, cls).validate_external_mode_cli(args)
-        except ValueError, err:
+        except ValueError as err:
             log.error(err)
             sys.exit(1)
 

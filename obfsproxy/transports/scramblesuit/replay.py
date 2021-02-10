@@ -9,7 +9,7 @@ dictionary.
 
 import time
 
-import const
+from . import const
 
 import obfsproxy.common.log as logging
 
@@ -74,7 +74,7 @@ class Tracker( object ):
         deleteList = []
         now = int(time.time())
 
-        for element in self.table.iterkeys():
+        for element in self.table.keys():
             if (now - self.table[element]) > const.EPOCH_GRANULARITY:
                 deleteList.append(element)
 

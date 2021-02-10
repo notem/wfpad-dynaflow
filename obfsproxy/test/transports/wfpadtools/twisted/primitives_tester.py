@@ -53,7 +53,7 @@ class SessionPrimitiveTestCase(WFPadPrimitiveTestCase):
         """Run the primitive with the specified arguments."""
         endpoint = kwargs.get('endpoint', self.pt_client)
         getattr(self.pt_client, self.primitive)(*args)
-        for _ in xrange(N_SAMPLES):
+        for _ in range(N_SAMPLES):
             self.send_timestamp(endpoint)
             self.advance_delayed_calls()  # call flush buffer
             self.advance_delayed_calls()  # call timeouts set in flushbuffer

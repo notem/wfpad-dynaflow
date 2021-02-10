@@ -3,7 +3,7 @@ import csv
 import psutil
 import shutil
 import signal
-import commands
+import subprocess
 from os import makedirs, remove, kill, utime, symlink, unlink
 from os.path import exists, isdir, isfile, dirname, abspath, realpath,\
     lexists
@@ -74,7 +74,7 @@ def replace_symlink(src, dst):
 
 
 def run_cmd(cmd):
-    return commands.getstatusoutput('%s ' % (cmd))
+    return subprocess.getstatusoutput('%s ' % (cmd))
 
 
 def get_package_path(pkg):

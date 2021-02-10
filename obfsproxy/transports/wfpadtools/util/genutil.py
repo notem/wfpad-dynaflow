@@ -103,7 +103,7 @@ def get_iats(list_ts):
 
 
 def map_to_each_n_elements_in_list(l, f, n=2):
-    return sum([f(l[i:i + n]) for i in xrange(0, len(l), n)], [])
+    return sum([f(l[i:i + n]) for i in range(0, len(l), n)], [])
 
 
 def combine_lists_alternate(l1, l2):

@@ -63,7 +63,7 @@ def set_up_cli_parsing():
     # Add a subparser for each transport. Also add a
     # transport-specific function to later validate the parsed
     # arguments.
-    for transport, transport_class in transports.transports.items():
+    for transport, transport_class in list(transports.transports.items()):
         subparser = subparsers.add_parser(transport, help='%s help' % transport)
         transport_class['base'].register_external_mode_cli(subparser)
         subparser.set_defaults(validation_function=transport_class['base'].validate_external_mode_cli)
@@ -145,7 +145,7 @@ def consider_cli_args(args):
 
 def run_transport_setup(pt_config, transport_name):
     """Run the setup() method for our transports."""
-    for transport, transport_class in transports.transports.items():
+    for transport, transport_class in list(transports.transports.items()):
         if transport == transport_name:
             transport_class['base'].setup(pt_config)
 
@@ -180,7 +180,7 @@ def pyobfsproxy():
 
         try:
             args.validation_function(args)
-        except ValueError, err:
+        except ValueError as err:
             log.error(err)
             sys.exit(1)
 
