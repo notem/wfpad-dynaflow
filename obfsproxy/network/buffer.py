@@ -8,7 +8,7 @@ class Buffer(object):
         """
         Initialize a buffer with 'data'.
         """
-        self.buffer = bytes(data)
+        self.buffer = bytes(data, encoding='utf-8')
 
     def read(self, n=-1):
         """
@@ -21,7 +21,7 @@ class Buffer(object):
 
         if (n < 0) or (n > len(self.buffer)):
             the_whole_buffer = self.buffer
-            self.buffer = bytes('')
+            self.buffer = bytes('', encoding='utf-8')
             return the_whole_buffer
 
         data = self.buffer[:n]
@@ -57,7 +57,7 @@ class Buffer(object):
         buffer.
         """
         if (n < 0) or (n > len(self.buffer)):
-            self.buffer = bytes('')
+            self.buffer = bytes('', encoding='utf-8')
             return
 
         self.buffer = self.buffer[n:]
