@@ -5,6 +5,7 @@ import obfsproxy.common.log as logging
 
 
 import socket
+import ipaddress
 import struct
 
 
@@ -154,6 +155,7 @@ class SOCKSv5Protocol(protocol.Protocol):
         self.otherConn = None
         self.state = self.ST_READ_METHODS
         self.authMethod = _SOCKS_AUTH_NO_ACCEPTABLE_METHODS
+        #self.authMethod = _SOCKS_AUTH_NO_AUTHENTICATION_REQUIRED
 
     def connectionLost(self, reason):
         if self.otherConn:
@@ -208,12 +210,10 @@ class SOCKSv5Protocol(protocol.Protocol):
         # Select the best method
         methods = msg.get(nmethods)
         for method in self.ACCEPTABLE_AUTH_METHODS:
-            log.error(method)
-            if chr(method) in methods:
+            if bytes(chr(method), encoding='utf-8') in methods:
                 self.authMethod = method
                 break
         if self.authMethod == _SOCKS_AUTH_NO_ACCEPTABLE_METHODS:
-            log.error(self.authMethod)
             log.error("No Acceptable Authentication Methods")
             self.authMethod = _SOCKS_AUTH_NO_ACCEPTABLE_METHODS
 
@@ -228,7 +228,7 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg = _ByteBuffer()
         msg.add_uint8(_SOCKS_VERSION)
         msg.add_uint8(self.authMethod)
-        self.transport.write(str(msg).encode('ISO-8859-1'))
+        self.transport.write(msg)#str(msg).encode('ISO-8859-1'))
 
         if self.authMethod == _SOCKS_AUTH_NO_ACCEPTABLE_METHODS:
             self.transport.loseConnection()
@@ -315,11 +315,11 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg.add_uint8(_SOCKS_RFC1929_VER)
         if success:
             msg.add_uint8(_SOCKS_RFC1929_SUCCESS)
-            self.transport.write(str(msg).encode('ISO-8859-1'))
+            self.transport.write(msg)#str(msg).encode('ISO-8859-1'))
             self.state = self.ST_READ_REQUEST
         else:
             msg.add_uint8(_SOCKS_RFC1929_FAIL)
-            self.transport.write(str(msg).encode('ISO-8859-1'))
+            self.transport.write(msg)#str(msg).encode('ISO-8859-1'))
             self.transport.loseConnection()
 
     def processNoAuthRequired(self):
@@ -362,11 +362,13 @@ class SOCKSv5Protocol(protocol.Protocol):
         if atyp == _SOCKS_ATYP_IP_V4:
             if len(msg) < 4:
                 return
-            addr = socket.inet_ntoa(msg.get(4))
+            #addr = socket.inet_ntoa(bytes(msg.get(4), encoding='utf-8'))
+            addr = str(ipaddress.ip_address(msg.get(4)))
         elif atyp == _SOCKS_ATYP_IP_V6:
             if len(msg) < 16:
                 return
-            addr = compat.inet_ntop(socket.AF_INET6,msg.get(16))
+            #addr = compat.inet_ntop(socket.AF_INET6,bytes(msg.get(16), encoding='utf-8'))
+            addr = str(ipaddress.ip_address(msg.get(16)))
         elif atyp == _SOCKS_ATYP_DOMAINNAME:
             if len(msg) < 1:
                 return
@@ -471,7 +473,7 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg.add_uint8(atype)
         msg.add(addr)
         msg.add_uint16(port, True)
-        self.transport.write(str(msg).encode('ISO-8859-1'))
+        self.transport.write(msg)#str(msg).encode('ISO-8859-1'))
 
         if reply == SOCKSv5Reply.Succeeded:
             self.state = self.ST_ESTABLISHED
@@ -530,7 +532,7 @@ class _ByteBuffer(bytearray):
 
 
         # Casting to string to workaround http://bugs.python.org/issue10212
-        tmp_string = str(self[0:2])
+        tmp_string = bytes(self[0:2])
         if ntohs:
             ret = struct.unpack("!H", tmp_string)[0]
         else:
@@ -563,7 +565,7 @@ class _ByteBuffer(bytearray):
         """
 
         # Casting to string to workaround http://bugs.python.org/issue10212
-        tmp_string = str(self[0:4])
+        tmp_string = bytes(self[0:4])
         if ntohl:
             ret = struct.unpack("!I", tmp_string)[0]
         else:
@@ -586,7 +588,7 @@ class _ByteBuffer(bytearray):
 
         ret = self[0:length]
         del self[0:length]
-        return str(ret)
+        return bytes(ret)
 
     def peek(self):
         """Clone the buffer."""

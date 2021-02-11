@@ -32,6 +32,8 @@ class Buffer(object):
         """
         Append 'data' to the buffer.
         """
+        if type(data) == str:
+            data = bytes(data, encoding='utf-8')
         self.buffer = self.buffer + data
 
     def peek(self, n=-1):
