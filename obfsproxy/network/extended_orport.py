@@ -61,7 +61,7 @@ def _read_auth_cookie(cookie_path):
                                      (cookie_path, auth_cookie_file_size, AUTH_COOKIE_FILE_LEN))
 
     try:
-        with file(cookie_path, 'rb', 0) as f:
+        with open(cookie_path, 'rb') as f:
             header = f.read(AUTH_COOKIE_HEADER_LEN) # first 32 bytes are the header
 
             if header != AUTH_COOKIE_HEADER:
