@@ -85,7 +85,7 @@ class SOCKSv5Outgoing(protocol.Protocol):
         try:
             atype, addr, port = self.getRawBoundAddr()
             self.socks.sendReply(SOCKSv5Reply.Succeeded, addr, port, atype)
-        except:
+        except Exception as e:
             self.socks.sendReply(SOCKSv5Reply.GeneralFailure)
 
     def connectionLost(self, reason):
@@ -99,9 +99,10 @@ class SOCKSv5Outgoing(protocol.Protocol):
 
     def getRawBoundAddr(self):
         host = self.transport.getHost()
+        log.error(host)
         port = host.port
         af = socket.getaddrinfo(host.host, port, 0, socket.SOCK_STREAM, socket.IPPROTO_TCP, socket.AI_NUMERICHOST | socket.AI_NUMERICSERV)[0][0]
-        raw_addr = compat.inet_pton(af, host.host)
+        raw_addr = socket.inet_pton(af, host.host)
         if af == socket.AF_INET:
             atype = _SOCKS_ATYP_IP_V4
         elif af == socket.AF_INET6:
@@ -473,7 +474,7 @@ class SOCKSv5Protocol(protocol.Protocol):
         msg.add_uint8(atype)
         msg.add(addr)
         msg.add_uint16(port, True)
-        self.transport.write(msg)#str(msg).encode('ISO-8859-1'))
+        self.transport.write(msg)
 
         if reply == SOCKSv5Reply.Succeeded:
             self.state = self.ST_ESTABLISHED
