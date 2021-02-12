@@ -5,6 +5,9 @@
 
 from obfsproxy.transports.base import BaseTransport
 
+import obfsproxy.common.log as logging
+log = logging.get_obfslogger()
+
 
 class DummyTransport(BaseTransport):
     """
@@ -22,14 +25,14 @@ class DummyTransport(BaseTransport):
         """
         Got data from downstream; relay them upstream.
         """
-
+        log.info('recieved {} bytes of data from downstream'.format(len(data)))
         self.circuit.upstream.write(data.read())
 
     def receivedUpstream(self, data):
         """
         Got data from upstream; relay them downstream.
         """
-
+        log.info('recieved {} bytes of data from upstream'.format(len(data)))
         self.circuit.downstream.write(data.read())
 
 class DummyClient(DummyTransport):

@@ -22,8 +22,8 @@ STATE_OPEN = 5
 AUTH_PROTOCOL_HEADER_LEN = 4
 
 # Safe-cookie authentication parameters:
-AUTH_SERVER_TO_CLIENT_CONST = "ExtORPort authentication server-to-client hash"
-AUTH_CLIENT_TO_SERVER_CONST = "ExtORPort authentication client-to-server hash"
+AUTH_SERVER_TO_CLIENT_CONST = b"ExtORPort authentication server-to-client hash"
+AUTH_CLIENT_TO_SERVER_CONST = b"ExtORPort authentication client-to-server hash"
 AUTH_NONCE_LEN = 32
 AUTH_HASH_LEN = 32
 
@@ -326,7 +326,7 @@ class ExtORPortProtocol(network.GenericProtocol):
 
         Throws CouldNotWriteExtCommand
         """
-        payload = ''
+        payload = b''
 
         if len(body) > 65535: # XXX split instead of quitting?
             log.warning("Obfsproxy was asked to send Extended ORPort command with more than "
@@ -338,7 +338,7 @@ class ExtORPortProtocol(network.GenericProtocol):
 
         payload += srlz.htons(command)
         payload += srlz.htons(len(body))
-        payload += body # body might be absent (empty string)
+        payload += bytes(body, encoding='utf-8') # body might be absent (empty string)
         self.write(payload)
 
 
