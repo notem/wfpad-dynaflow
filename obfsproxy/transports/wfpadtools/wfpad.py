@@ -251,7 +251,8 @@ class WFPadTransport(BaseTransport, PaddingPrimitivesInterface):
         elif isinstance(data, mes.WFPadMessage):
             data.sndTime = time.time()
             direction = const.OUT if self.weAreClient else const.IN
-            self.circuit.downstream.write(str(data))
+            log.debug(type(data))
+            self.circuit.downstream.write(data.bytes())
             log.debug("[wfpad - %s] A new message (flag=%s) sent!", self.end, data.flags)
 
             if not data.flags & const.FLAG_CONTROL:

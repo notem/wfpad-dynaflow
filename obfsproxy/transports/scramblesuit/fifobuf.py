@@ -7,9 +7,9 @@ Ben Timby: http://ben.timby.com/?p=139
 """
 
 try:
-    from io import StringIO
+    from io import BytesIO
 except ImportError:
-    from io import StringIO
+    from io import BytesIO
 
 MAX_BUFFER = 1024**2*4
 
@@ -42,7 +42,7 @@ class Buffer( object ):
 
         # Add a StringIO buffer if none exists yet.
         if not self.buffers:
-            self.buffers.append(StringIO())
+            self.buffers.append(BytesIO())
             self.write_pos = 0
 
         lastBuf = self.buffers[-1]
@@ -51,7 +51,7 @@ class Buffer( object ):
 
         # If we are over the limit, a new internal buffer is created.
         if lastBuf.tell() >= self.max_size:
-            lastBuf = StringIO()
+            lastBuf = BytesIO()
             self.buffers.append(lastBuf)
 
         self.write_pos = lastBuf.tell()
@@ -63,7 +63,7 @@ class Buffer( object ):
         Drained data is automatically deleted.
         """
 
-        read_buf = StringIO()
+        read_buf = BytesIO()
         remaining = length
 
         while True:

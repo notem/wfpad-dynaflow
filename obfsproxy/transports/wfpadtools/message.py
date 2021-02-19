@@ -23,7 +23,7 @@ class WFPadMessage(object):
     """Represents a WFPad protocol message."""
 
     def __init__(self, payload='', paddingLen=0, flags=const.FLAG_DATA, opcode=None, args=""):
-        self.payload = payload
+        self.payload = bytes(payload, encoding='utf-8') if isinstance(payload, str) else payload
         self.payloadLen = len(self.payload)
         self.totalLen = self.payloadLen + paddingLen
         if (self.totalLen) > const.MPU:
@@ -31,25 +31,32 @@ class WFPadMessage(object):
         self.sndTime = 0
         self.rcvTime = 0
         self.flags = flags
+        log.debug("sent message flags {}".format(flags))
         self.opcode = opcode
         self.argsLen = len(args)
-        self.args = args
+        self.args = bytes(args, encoding='utf-8') if isinstance(args, str) else args
 
     def generatePadding(self):
-        return (self.totalLen - self.payloadLen) * '\0'
+        return (self.totalLen - self.payloadLen) * b'\0'
 
-    def __str__(self):
+    def bytes(self):
         """Return string representation of the message."""
         totalLenStr = pack.htons(self.totalLen)
         payloadLenStr = pack.htons(self.payloadLen)
-        flagsStr = chr(self.flags)
+        flagsStr = bytes([self.flags])
         headerStr = totalLenStr + payloadLenStr + flagsStr
+        log.debug(flagsStr)
+        log.debug(len(self.args)+len(headerStr))
         if isControl(self):
-            opCodeStr = chr(self.opcode)
+            opCodeStr = bytes([self.opcode])
+            log.debug(opCodeStr)
             argsLenStr = pack.htons(self.argsLen)
             headerStr += opCodeStr + argsLenStr
         paddingStr = self.generatePadding()
         payloadStr = self.args + self.payload + paddingStr
+        t = headerStr + payloadStr
+        log.debug(t)
+        log.debug(t[4])
         return headerStr + payloadStr
 
     def __len__(self):
@@ -268,7 +275,7 @@ class WFPadMessageExtractor(object):
         """Create a new WFPadMessageExtractor object."""
         self.totalLen = self.payloadLen = self.flags = self.opcode = None
         self.argsLen = 0
-        self.recvBuf = self.args = ""
+        self.recvBuf = self.args = bytes("", encoding='utf-8')
 
     def getHeaderLen(self, flags=None):
         return const.HDR_CTRL_LEN if flags & const.FLAG_CONTROL \
@@ -289,9 +296,9 @@ class WFPadMessageExtractor(object):
 
     def getFlags(self, string=None):
         """Return `flags` field from buffer."""
-        return ord(self.getMessageField(const.FLAGS_POS,
+        return int.from_bytes(self.getMessageField(const.FLAGS_POS,
                                         const.FLAGS_LEN,
-                                        string))
+                                        string), 'big')
 
     def getPayloadLen(self, string=None):
         """Return `payloadLen` field from buffer."""
@@ -307,9 +314,9 @@ class WFPadMessageExtractor(object):
 
     def getOpCode(self, string=None):
         """Return `opcode` field from buffer."""
-        return ord(self.getMessageField(const.CONTROL_POS,
+        return int.from_bytes(self.getMessageField(const.CONTROL_POS,
                                         const.CONTROL_LEN,
-                                        string))
+                                        string), 'big')
 
     def getargsLen(self, string=None):
         """Return `argsLen` field from buffer."""
