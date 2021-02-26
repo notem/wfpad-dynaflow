@@ -20,7 +20,7 @@ for i in range(0, 9999):
 
 
 class DynaflowTransport(WFPadTransport):
-    """Implementation of the BuFLO countermeasure.
+    """Implementation of the Dynaflow countermeasure.
 
     It extends the BasePadder by choosing a constant probability distribution
     for time, and a constant probability distribution for packet lengths. The
@@ -57,26 +57,26 @@ class DynaflowTransport(WFPadTransport):
     @classmethod
     def register_external_mode_cli(cls, subparser):
         """Register CLI arguments for BuFLO parameters."""
-        subparser.add_argument("--period",
-                               required=False,
-                               type=float,
-                               help="Time rate at which transport sends "
-                                    "messages (Default: 12ms).",
-                               dest="period")
-        subparser.add_argument("--psize",
-                               required=False,
-                               type=int,
-                               help="Length of messages to be transmitted"
-                                    " (Default: MTU).",
-                               dest="psize")
-        subparser.add_argument("--mintime",
-                               required=False,
-                               type=int,
-                               help="Minimum padding time per visit."
-                                    " (Default: no minimum time).",
-                               dest="mintime")
+        #subparser.add_argument("--period",
+        #                       required=False,
+        #                       type=float,
+        #                       help="Time rate at which transport sends "
+        #                            "messages (Default: 12ms).",
+        #                       dest="period")
+        #subparser.add_argument("--psize",
+        #                       required=False,
+        #                       type=int,
+        #                       help="Length of messages to be transmitted"
+        #                            " (Default: MTU).",
+        #                       dest="psize")
+        #subparser.add_argument("--mintime",
+        #                       required=False,
+        #                       type=int,
+        #                       help="Minimum padding time per visit."
+        #                            " (Default: no minimum time).",
+        #                       dest="mintime")
 
-        super(BuFLOTransport, cls).register_external_mode_cli(subparser)
+        super(DynaflowTransport, cls).register_external_mode_cli(subparser)
 
     @classmethod
     def validate_external_mode_cli(cls, args):
@@ -87,12 +87,12 @@ class DynaflowTransport(WFPadTransport):
         """
         super(DynaflowTransport, cls).validate_external_mode_cli(args)
 
-        if args.mintime:
-            cls._mintime = int(args.mintime)
-        if args.period:
-            cls._period = args.period
-        if args.psize:
-            cls._length = args.psize
+        #if args.mintime:
+        #    cls._mintime = int(args.mintime)
+        #if args.period:
+        #    cls._period = args.period
+        #if args.psize:
+        #    cls._length = args.psize
 
     def _find_new_time_gap(self):
         """Finds new time gap for defended sequence."""
@@ -246,12 +246,12 @@ class DynaflowTransport(WFPadTransport):
 class DynaflowClient(DynaflowTransport):
 
     def __init__(self):
-        """Initialize a BuFLOClient object."""
+        """Initialize a DynaflowClient object."""
         DynaflowTransport.__init__(self)
 
 
 class DynaflowServer(DynaflowTransport):
 
     def __init__(self):
-        """Initialize a BuFLOServer object."""
+        """Initialize a DynaflowServer object."""
         DynaflowTransport.__init__(self)
