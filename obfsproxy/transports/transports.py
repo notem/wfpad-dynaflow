@@ -6,7 +6,7 @@ import obfsproxy.transports.obfs3 as obfs3
 import obfsproxy.transports.scramblesuit.scramblesuit as scramblesuit
 import obfsproxy.transports.wfpadtools.wfpad as wfpad
 from obfsproxy.transports.wfpadtools.specific import buflo, csbuflo, tamaraw, \
-    adaptive, bwdiff, walkietalkie
+    adaptive, bwdiff, walkietalkie, dynaflow
 
 transports = {'dummy': {'base': dummy.DummyTransport, 'client': dummy.DummyClient, 'server': dummy.DummyServer},
               'b64': {'base': b64.B64Transport, 'client': b64.B64Client, 'server': b64.B64Server},
@@ -16,6 +16,7 @@ transports = {'dummy': {'base': dummy.DummyTransport, 'client': dummy.DummyClien
                                'server': scramblesuit.ScrambleSuitServer},
               'obfs3': {'base': obfs3.Obfs3Transport, 'client': obfs3.Obfs3Client, 'server': obfs3.Obfs3Server},
               'buflo': {'base': buflo.BuFLOTransport, 'client': buflo.BuFLOClient, 'server': buflo.BuFLOServer},
+              'dynaflow': {'base': dynaflow.DynaflowTransport, 'client': dynaflow.DynaflowClient, 'server': dynaflow.DynaflowServer},
               'wfpad': {'base': wfpad.WFPadTransport, 'client': wfpad.WFPadClient, 'server': wfpad.WFPadServer},
               'csbuflo': {'base': csbuflo.CSBuFLOTransport, 'client': csbuflo.CSBuFLOClient,
                           'server': csbuflo.CSBuFLOServer},
