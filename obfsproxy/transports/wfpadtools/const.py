@@ -90,7 +90,7 @@ MTU                     = 1500
 PSIZE                   = 600
 
 # Header length
-MIN_HDR_LEN             = TOTLENGTH_LEN + PAYLOAD_LEN + FLAGS_LEN
+MIN_HDR_LEN             = TOTLENGTH_LEN + PAYLOAD_LEN + FLAGS_LEN + 2
 CTRL_FIELDS_LEN         = CONTROL_LEN + ARGS_TOTAL_LENGTH_LEN
 HDR_CTRL_LEN            = MIN_HDR_LEN + CTRL_FIELDS_LEN
 

@@ -22,7 +22,7 @@ log = logging.get_obfslogger()
 class WFPadMessage(object):
     """Represents a WFPad protocol message."""
 
-    def __init__(self, payload='', paddingLen=0, flags=const.FLAG_DATA, opcode=None, args=""):
+    def __init__(self, payload='', paddingLen=0, flags=const.FLAG_DATA, opcode=None, args="", queue_time=0):
         self.payload = bytes(payload, encoding='utf-8') if isinstance(payload, str) else payload
         self.payloadLen = len(self.payload)
         self.totalLen = self.payloadLen + paddingLen
@@ -30,6 +30,7 @@ class WFPadMessage(object):
             raise base.PluggableTransportError("The transport created a message longer than TCP's MTU.")
         self.sndTime = 0
         self.rcvTime = 0
+        self.queueTime = queue_time
         self.flags = flags
         log.debug("sent message flags {}".format(flags))
         self.opcode = opcode
@@ -44,7 +45,8 @@ class WFPadMessage(object):
         totalLenStr = pack.htons(self.totalLen)
         payloadLenStr = pack.htons(self.payloadLen)
         flagsStr = bytes([self.flags])
-        headerStr = totalLenStr + payloadLenStr + flagsStr
+        headerStr = totalLenStr + payloadLenStr + flagsStr 
+        headerStr += pack.htons(self.queueTime)
         log.debug(flagsStr)
         log.debug(len(self.args)+len(headerStr))
         if isControl(self):
@@ -92,9 +94,9 @@ def isLast(msg):
 
 class WFPadMessageFactory(object):
 
-    def new(self, payload="", paddingLen=0, flags=const.FLAG_DATA, opcode=None, args=""):
+    def new(self, payload="", paddingLen=0, flags=const.FLAG_DATA, opcode=None, args="", **kwargs):
         """Create a new WFPad message."""
-        return WFPadMessage(payload, paddingLen, flags, opcode, args)
+        return WFPadMessage(payload, paddingLen, flags, opcode, args, **kwargs)
 
     def newIgnore(self, paddingLen):
         """Shortcut to create a new dummy message."""
@@ -275,11 +277,13 @@ class WFPadMessageExtractor(object):
         """Create a new WFPadMessageExtractor object."""
         self.totalLen = self.payloadLen = self.flags = self.opcode = None
         self.argsLen = 0
+        self.queueTime = 0
         self.recvBuf = self.args = bytes("", encoding='utf-8')
 
     def getHeaderLen(self, flags=None):
         return const.HDR_CTRL_LEN if flags & const.FLAG_CONTROL \
             else const.MIN_HDR_LEN
+
 
     def getNumMsgsFromSize(self, size, mpu):
         """Return number of WFPad messages required for `size` bytes."""
@@ -299,6 +303,11 @@ class WFPadMessageExtractor(object):
         return int.from_bytes(self.getMessageField(const.FLAGS_POS,
                                         const.FLAGS_LEN,
                                         string), 'big')
+
+    def getQueueTime(self, string=None):
+        return pack.ntohs(self.getMessageField(const.FLAGS_POS+const.FLAGS_LEN, 
+                                               2, 
+                                               string))
 
     def getPayloadLen(self, string=None):
         """Return `payloadLen` field from buffer."""
@@ -372,6 +381,7 @@ class WFPadMessageExtractor(object):
         self.totalLen = self.getTotalLen()
         self.payloadLen = self.getPayloadLen()
         self.flags = self.getFlags()
+        self.queueTime = self.getQueueTime()
         # Sanity check of the fields
         if not isSane(self.totalLen, self.payloadLen, self.flags):
             log.error("TotalLen: %s, PayloadLen: %s, Flags: %s", self.totalLen, self.payloadLen, self.flags)
@@ -412,11 +422,13 @@ class WFPadMessageExtractor(object):
         total = self.getTotalLen(string)
         totalPayload = self.getMessageField(start, total, string)
         extracted = totalPayload[:payloadLen]
+        queueTime = self.getQueueTime()
         return WFPadMessage(payload=extracted,
                             paddingLen=total-payloadLen,
                             flags=flags,
                             opcode=opcode,
-                            args=args)
+                            args=args, 
+                            queueTime=queueTime)
 
     def extract(self, data):
         """Extracts WFPad protocol messages.
