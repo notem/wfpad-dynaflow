@@ -11,13 +11,6 @@ from obfsproxy.transports.wfpadtools.wfpad import WFPadTransport
 log = logging.get_obfslogger()
 
 
-# possible end-sizes (low to high)
-end_sizes = []
-for i in range(0, 9999):
-    if k ** i > 10000000:
-        break
-    end_sizes.append(round(k ** i))
-
 
 class DynaflowTransport(WFPadTransport):
     """Implementation of the Dynaflow countermeasure.
@@ -34,6 +27,7 @@ class DynaflowTransport(WFPadTransport):
         self._mintime = -1
         self._first_time_gap = 12
         self._poss_time_gaps = [12, 5]
+        self._switch_sizes = [400, 1200, 2000, 2800]
         self._block_size = 400
         self._subseq_length = 4
         self._memory = 100
@@ -44,6 +38,15 @@ class DynaflowTransport(WFPadTransport):
         self._past_times = []
         self._queue_times = []
         self._end_size = 0
+
+        # possible end-sizes (low to high)
+        k = 1.2
+        self._end_sizes = []
+        for i in range(0, 9999):
+            if k ** i > 10000000:
+                break
+            self._end_sizes.append(round(k ** i))
+
 
         # Set constant length for messages
         self._lengthDataProbdist = histo.uniform(self._length)
@@ -136,7 +139,7 @@ class DynaflowTransport(WFPadTransport):
     def onSessionEnds(self, sessId):
         """find the correct endsize for end padding"""
         pkt_count = self._no_sent + self._no_recv
-        for size in end_sizes:
+        for size in self._end_sizes:
             if pkt_count < size:
                 self._end_size = size
                 break
