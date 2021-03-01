@@ -654,7 +654,10 @@ class WFPadTransport(BaseTransport, PaddingPrimitivesInterface):
 
     def isVisiting(self):
         """Return a bool indicating if we're in the middle of a session."""
-        return self._visiting
+        try:
+            return self._visiting
+        except:
+            return False
 
 
 class WFPadClient(WFPadTransport):
