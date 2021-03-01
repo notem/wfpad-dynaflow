@@ -32,7 +32,6 @@ class WFPadMessage(object):
         self.rcvTime = 0
         self.queueTime = int(queueTime)
         self.flags = flags
-        log.debug("sent message flags {}".format(flags))
         self.opcode = opcode
         self.argsLen = len(args)
         self.args = bytes(args, encoding='utf-8') if isinstance(args, str) else args
@@ -47,18 +46,13 @@ class WFPadMessage(object):
         flagsStr = bytes([self.flags])
         headerStr = totalLenStr + payloadLenStr + flagsStr 
         headerStr += pack.htons(self.queueTime)
-        log.debug(flagsStr)
-        log.debug(len(self.args)+len(headerStr))
         if isControl(self):
             opCodeStr = bytes([self.opcode])
-            log.debug(opCodeStr)
             argsLenStr = pack.htons(self.argsLen)
             headerStr += opCodeStr + argsLenStr
         paddingStr = self.generatePadding()
         payloadStr = self.args + self.payload + paddingStr
         t = headerStr + payloadStr
-        log.debug(t)
-        log.debug(t[4])
         return headerStr + payloadStr
 
     def __len__(self):

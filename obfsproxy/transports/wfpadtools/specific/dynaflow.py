@@ -180,7 +180,7 @@ class DynaflowTransport(WFPadTransport):
             if self._no_sent * self._subseq_length in self._switch_sizes:
                 self._find_new_time_gap()
                 self._configure_padding()
-        WFPadTransport.sendIgnore(paddingLength)
+        super(DynaflowTransport, self).sendIgnore(paddingLength)
 
     def processMessages(self, data):
         """Extract WFPad protocol messages.

@@ -294,8 +294,11 @@ class WFPadTransport(BaseTransport, PaddingPrimitivesInterface):
         don't send the padding message.
         """
         if not paddingLength:
-            paddingLength = self._lengthDataProbdist.randomSample()
-            if paddingLength == const.INF_LABEL:
+            try:
+                paddingLength = self._lengthDataProbdist.randomSample()
+                if paddingLength == const.INF_LABEL:
+                    paddingLength = const.MPU
+            except:
                 paddingLength = const.MPU
 
         if self.downstreamSocket:
