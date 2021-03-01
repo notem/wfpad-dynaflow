@@ -22,7 +22,7 @@ log = logging.get_obfslogger()
 class WFPadMessage(object):
     """Represents a WFPad protocol message."""
 
-    def __init__(self, payload='', paddingLen=0, flags=const.FLAG_DATA, opcode=None, args="", queue_time=0):
+    def __init__(self, payload='', paddingLen=0, flags=const.FLAG_DATA, opcode=None, args="", queueTime=0):
         self.payload = bytes(payload, encoding='utf-8') if isinstance(payload, str) else payload
         self.payloadLen = len(self.payload)
         self.totalLen = self.payloadLen + paddingLen
@@ -30,7 +30,7 @@ class WFPadMessage(object):
             raise base.PluggableTransportError("The transport created a message longer than TCP's MTU.")
         self.sndTime = 0
         self.rcvTime = 0
-        self.queueTime = queue_time
+        self.queueTime = int(queueTime)
         self.flags = flags
         log.debug("sent message flags {}".format(flags))
         self.opcode = opcode

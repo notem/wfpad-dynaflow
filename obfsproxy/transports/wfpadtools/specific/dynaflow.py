@@ -103,13 +103,15 @@ class DynaflowTransport(WFPadTransport):
         # find average time gap
         if len(self._past_times) >= self._memory:
             average_time_gap = float(self._past_times[-1] - self._past_times[-self._memory]) / (self._memory - 1)
+            average_time_gap *= 1000
         elif len(self._past_times) > 10:
             average_time_gap = float(self._past_times[-1] - self._past_times[0]) / (len(self._past_times) - 1)
+            average_time_gap *= 1000
         else:
             average_time_gap = self.time_gap
     
         # find expected time gap
-        exp_packet_num = self._block_size + 1 * float(self._curr_time - self._past_times[-1]) / average_time_gap
+        exp_packet_num = self._block_size + 1 * (float(self._curr_time - self._past_times[-1])*1000) / average_time_gap
         exp_time_gap = self._block_size / exp_packet_num * average_time_gap
     
         # choose next timeg gap
@@ -121,6 +123,7 @@ class DynaflowTransport(WFPadTransport):
                 self.time_gap = self._poss_time_gaps[i - 1]
                 return
         self.time_gap = self._poss_time_gaps[-1]
+        log.debug(f"New timegap {self.time_gap} (from expected {exp_time_gap})")
 
     def _configure_padding(self):
         if self.weAreClient:
@@ -168,7 +171,8 @@ class DynaflowTransport(WFPadTransport):
                 self._find_new_time_gap()
                 self._configure_padding()
         self._curr_time = time.time()
-        self.sendDownstream(self._msgFactory.new(payload, paddingLen, queueTime=self._curr_time-self._queue_times[-1]))
+        timeoffset = int(abs(self._curr_time-self._queue_times[-1])*1000)
+        self.sendDownstream(self._msgFactory.new(payload, paddingLen, queueTime=timeoffset))
 
     def sendIgnore(self, paddingLength=None):
         self._no_sent += 1
@@ -238,7 +242,7 @@ class DynaflowTransport(WFPadTransport):
                 self.session.history.append(
                     (time.time(), const.FLAG_DATA, direction, msg.totalLen, len(msg.payload)))
 
-                self._past_times = msg.queueTime + time.time()
+                self._past_times.append((msg.queueTime/1000) + time.time())
 
             # Otherwise, flag not recognized
             else:
