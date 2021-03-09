@@ -43,9 +43,10 @@ class DynaflowTransport(WFPadTransport):
         k = 1.2
         self._end_sizes = []
         for i in range(0, 9999):
-            if k ** i > 10000000:
+            t = (k ** i) * self._subseq_length
+            if t > 10000000:
                 break
-            self._end_sizes.append(round(k ** i))
+            self._end_sizes.append(round(t))
 
 
         # Set constant length for messages
