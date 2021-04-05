@@ -74,13 +74,13 @@ PAYLOAD_LEN             = 2
 FLAGS_POS               = 4
 FLAGS_LEN               = 1
 
-CONTROL_POS             = 5
+CONTROL_POS             = 5+2
 CONTROL_LEN             = 1
 
-ARGS_TOTAL_LENGTH_POS   = 6
+ARGS_TOTAL_LENGTH_POS   = 6+2
 ARGS_TOTAL_LENGTH_LEN   = 2
 
-ARGS_POS                = 8
+ARGS_POS                = 8+2
 
 # Length of WFPad's MTU in bytes.  Note that this is *not* the link MTU
 # which is probably 1500 (we substract 52 bytes = TCP (32B) + IP (20B) headers)
@@ -97,6 +97,8 @@ HDR_CTRL_LEN            = MIN_HDR_LEN + CTRL_FIELDS_LEN
 # Maximum payload unit of a WFPad message in bytes
 MPU                     = MTU - MIN_HDR_LEN
 MPU_CTRL                = MTU - HDR_CTRL_LEN
+MPU -= 118
+MPU_CTRL -= 118
 
 # Max delay
 MAX_DELAY               = 262144
@@ -104,8 +106,8 @@ INIT_RHO                = 0
 MAX_RHO                 = 10000
 
 # Default shim ports
-SHIM_PORT               = 4997
-SOCKS_PORT              = 4998
+SHIM_PORT               = 9150
+SOCKS_PORT              = 9151
 
 WT_PORT                 = 4996
 

@@ -54,7 +54,7 @@ def rand_str(size=DEFAULT_RAND_STR_SIZE, chars=DEFAULT_RAND_STR_CHARS):
 def hash_text(text, algo='sha1'):
     """Return the hash value for the text."""
     h = hashlib.new(algo)
-    h.update(text)
+    h.update(text.encode('utf-8'))
     return h.hexdigest()
 
 

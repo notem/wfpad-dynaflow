@@ -53,6 +53,7 @@ class WFPadMessage(object):
         paddingStr = self.generatePadding()
         payloadStr = self.args + self.payload + paddingStr
         t = headerStr + payloadStr
+        log.debug(f'{headerStr} {len(headerStr)}')
         return headerStr + payloadStr
 
     def __len__(self):

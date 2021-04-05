@@ -163,6 +163,7 @@ class SocksShim(object):
         
     def listen(self):
         self._ep = TCP4ServerEndpoint(reactor, self._port, interface='127.0.0.1')
+        log.debug(f'[shim]: create endpoint on port {self._port}')
         if self._socks_port == -1:
             d = self._ep.listen(_ShimTestFactory(self))
         else:
@@ -211,13 +212,13 @@ class SocksShim(object):
 
     def notifyConnect(self):
         self._id += 1
-        log.debug('[shim]: notifyConnect: id=%d', self._id)
+        log.debug(f'[shim]: notifyConnect: id={self._id}')
         for o in self._observers:
             o.onConnect(self._id)
         return self._id
 
     def notifyDisconnect(self, conn_id):
-        log.debug('[shim]: notifyDisconnect: id=%d', conn_id)
+        log.debug('[shim]: notifyDisconnect: id={conn_id}')
         for o in self._observers:
             o.onDisconnect(conn_id)
 
